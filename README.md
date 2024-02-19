@@ -1,5 +1,5 @@
 # Bujt
-A simple and practical SwiftUI project for managing your spending
+A simple and practical SwiftUI project for managing your spending. I built this when my partner and I were expecting our first child so that we could have more control over our expendature and savings.
 ## Screen Caps
 The below images show the UI views as seen in iOS
 
