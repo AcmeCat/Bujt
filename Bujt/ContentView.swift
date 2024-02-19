@@ -18,13 +18,13 @@ struct ContentView: View {
     
     @State private var personalBudgetMax: Int16 = Int16(UserDefaults.standard.integer(forKey: "personalBudgetMax"))
     @State private var groceryBudgetMax: Int16 = Int16(UserDefaults.standard.integer(forKey: "groceryBudgetMax"))
-    @State private var babyBudgetMax: Int16 = Int16(UserDefaults.standard.integer(forKey: "babyBudgetMax"))
+    @State private var savingsBudgetMax: Int16 = Int16(UserDefaults.standard.integer(forKey: "savingsBudgetMax"))
     
     @Environment(\.managedObjectContext) var moc
     
-    @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "category = %@", Category.baby.rawValue)) var babyEntries: FetchedResults<Entry>
-    @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "category = %@", Category.personal.rawValue)) var personalEntries: FetchedResults<Entry>
-    @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "category = %@", Category.groceries.rawValue)) var groceryEntries: FetchedResults<Entry>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.date)], predicate: NSPredicate(format: "category = %@", Category.personal.rawValue)) var personalEntries: FetchedResults<Entry>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.date)], predicate: NSPredicate(format: "category = %@", Category.groceries.rawValue)) var groceryEntries: FetchedResults<Entry>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.date)], predicate: NSPredicate(format: "category = %@", Category.savings.rawValue)) var savingsEntries: FetchedResults<Entry>
     
     var body: some View {
         NavigationView {
@@ -32,20 +32,26 @@ struct ContentView: View {
                 Section {
                     Text("Remaining Cash")
                         .font(.title)
-                    HStack {
-                        Text("Personal:")
-                        Spacer()
-                        Text("$\(personalBudgetMax - total(personalEntries))")
+                    if personalBudgetMax > 0 {
+                        HStack {
+                            Text("Personal:")
+                            Spacer()
+                            Text("$\(personalBudgetMax - total(personalEntries))")
+                        }
                     }
-                    HStack {
-                        Text("Groceries:")
-                        Spacer()
-                        Text("$\(groceryBudgetMax - total(groceryEntries))")
+                    if groceryBudgetMax > 0 {
+                        HStack {
+                            Text("Groceries:")
+                            Spacer()
+                            Text("$\(groceryBudgetMax - total(groceryEntries))")
+                        }
                     }
-                    HStack {
-                        Text("Baby:")
-                        Spacer()
-                        Text("$\(babyBudgetMax - total(babyEntries))")
+                    if savingsBudgetMax > 0 {
+                        HStack {
+                            Text("Savings:")
+                            Spacer()
+                            Text("$\(savingsBudgetMax - total(savingsEntries))")
+                        }
                     }
                 }
                 if personalEntries.count > 0 {
@@ -57,6 +63,7 @@ struct ContentView: View {
                                 Text("$\(entry.cost)")
                             }
                         }
+                        .onDelete(perform: removePersonalEntry)
                     } header: {
                         Text("Personal: $\(total(personalEntries))")
                     }
@@ -71,21 +78,23 @@ struct ContentView: View {
                                 Text("$\(entry.cost)")
                             }
                         }
+                        .onDelete(perform: removeGroceryEntry)
                     } header: {
                         Text("Groceries: $\(total(groceryEntries))")
                     }
                 }
-                if babyEntries.count > 0 {
+                if savingsEntries.count > 0 {
                     Section {
-                        ForEach(babyEntries) { entry in
+                        ForEach(savingsEntries) { entry in
                             HStack {
                                 Text(entry.name ?? "Unknown")
                                 Spacer()
                                 Text("$\(entry.cost)")
                             }
                         }
+                        .onDelete(perform: removeSavingsEntry)
                     } header: {
-                        Text("For Baby: $\(total(babyEntries))")
+                        Text("Savings: $\(total(savingsEntries))")
                     }
                 }
                 Button {
@@ -156,7 +165,7 @@ private extension ContentView {
     func dismissManage () {
         personalBudgetMax = Int16(UserDefaults.standard.integer(forKey: "personalBudgetMax"))
         groceryBudgetMax = Int16(UserDefaults.standard.integer(forKey: "groceryBudgetMax"))
-        babyBudgetMax = Int16(UserDefaults.standard.integer(forKey: "babyBudgetMax"))
+        savingsBudgetMax = Int16(UserDefaults.standard.integer(forKey: "savingsBudgetMax"))
     }
     
     func total (_ entries: FetchedResults<Entry>) -> Int16 {
@@ -182,5 +191,29 @@ private extension ContentView {
         } catch let error as NSError {
             print("an error: ", error.localizedDescription)
         }
+    }
+    
+    func removePersonalEntry(at indexSet: IndexSet) {
+        for index in indexSet {
+            let entry = personalEntries[index]
+            moc.delete(entry)
+        }
+        try? moc.save()
+    }
+    
+    func removeGroceryEntry(at indexSet: IndexSet) {
+        for index in indexSet {
+            let entry = groceryEntries[index]
+            moc.delete(entry)
+        }
+        try? moc.save()
+    }
+    
+    func removeSavingsEntry(at indexSet: IndexSet) {
+        for index in indexSet {
+            let entry = savingsEntries[index]
+            moc.delete(entry)
+        }
+        try? moc.save()
     }
 }

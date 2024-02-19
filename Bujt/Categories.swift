@@ -9,5 +9,5 @@ import Foundation
 
 enum Category: String, CaseIterable, Identifiable {
     var id: Self {self}
-    case groceries, personal, baby
+    case groceries, personal, savings, utilities
 }

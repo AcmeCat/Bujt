@@ -11,14 +11,14 @@ struct BudgetView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var personalBudget: Int16 = Int16(UserDefaults.standard.integer(forKey: "personalBudgetMax"))
     @State private var groceryBudget: Int16 = Int16(UserDefaults.standard.integer(forKey: "groceryBudgetMax"))
-    @State private var babyBudget: Int16 = Int16(UserDefaults.standard.integer(forKey: "babyBudgetMax"))
+    @State private var savingsBudget: Int16 = Int16(UserDefaults.standard.integer(forKey: "savingsBudgetMax"))
     
     var body: some View {
         NavigationView {
             Form {
                 Stepper("For personal use: $\(personalBudget)", value: $personalBudget, step: 10)
                 Stepper("For groceries: $\(groceryBudget)", value: $groceryBudget, step: 10)
-                Stepper("For baby nesting: $\(babyBudget)", value: $babyBudget, step: 10)
+                Stepper("For savings: $\(savingsBudget)", value: $savingsBudget, step: 10)
                 Button("Submit") {
                     submit()
                 }
@@ -36,8 +36,7 @@ extension BudgetView {
     func submit() {
         UserDefaults.standard.set(personalBudget, forKey: "personalBudgetMax")
         UserDefaults.standard.set(groceryBudget, forKey: "groceryBudgetMax")
-        UserDefaults.standard.set(babyBudget, forKey: "babyBudgetMax")
-        
+        UserDefaults.standard.set(savingsBudget, forKey: "savingsBudgetMax")
         dismiss()
     }
 }
