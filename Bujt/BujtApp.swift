@@ -13,7 +13,7 @@ struct BujtApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(context: dataController.container.viewContext)
                 .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }

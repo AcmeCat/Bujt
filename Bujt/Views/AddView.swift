@@ -12,40 +12,43 @@ struct AddView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) private var dismiss
     
+    var categories: [String]
+    
     @State private var name: String = ""
-    @State private var category: Category = .personal
-    @State private var cost: Int16 = 0
+    @State private var selectedCategory: String = "personal"
+    @State private var cost: Double = 0.0
     
     var body: some View {
         Form {
             TextField(text: $name) {
                 Text("descprition")
             }
-            Picker("category", selection: $category) {
-                ForEach(Category.allCases) { category in
-                    Text(category.rawValue)
+            Picker("category", selection: $selectedCategory) {
+                ForEach(categories, id: \.self) { category in
+                    Text(category).tag(category)
                 }
             }
-            Stepper("$\(cost)", value: $cost)
+            //Stepper("$\(cost)", value: $cost)
+            TextField("Amount", value: $cost, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
             Button("Submit") {
-                saveEntry(name: name, category: category, cost: cost)
+                saveEntry(name: name, category: selectedCategory, cost: cost)
             }
         }
     }
 }
 
 #Preview {
-    AddView()
+    AddView(categories: ["Personal", "Utilities"])
 }
 
 extension AddView {
     
-    func saveEntry(name: String, category: Category, cost: Int16) {
+    func saveEntry(name: String, category: String, cost: Double) {
         let entry = Entry(context: moc)
         entry.id = UUID()
         if (name == "") { return }
         entry.name = name
-        entry.category = category.rawValue
+        entry.category = category
         if (cost == 0) { return }
         entry.cost = cost
         entry.date = Date()
