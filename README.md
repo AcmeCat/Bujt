@@ -1,4 +1,4 @@
-# <img src="https://github.com/user-attachments/assets/3b0f2c81-1e9a-4002-bb7a-675b50468f77" height="40" width="40"> Bujt
+# <img src="https://github.com/user-attachments/assets/1551e4fb-849b-4d32-9e3b-c19d91e988cd" height="40" width="40"> Bujt
 Bujt is a practical iOS budgeting app built with SwiftUI. It was born out of a personal need—to help my partner and me manage our finances better as we prepared for the arrival of our first child. With a clean, minimal interface and a simple weekly flow, Bujt helps users track expenses, set budget categories, and reset spending each week for a fresh start.
 
 ## Features
@@ -63,6 +63,14 @@ Bujt
 └── Tests
     └── BujtTests.swift
 ```
+| **Architecture Diagram** |
+| --------- |
+| ![bujt_architecture_diagram](https://github.com/user-attachments/assets/28f21541-e602-4eee-bdf4-cf9b4a21ca50) |
+
+
+| **Class Diagram** |
+| --------- |
+| ![bujt_class_diagram](https://github.com/user-attachments/assets/2b958dd4-bda2-4835-b664-c30e119d5df8) |
 
 ## Screen Caps
 The below images show the UI views as seen in iOS
